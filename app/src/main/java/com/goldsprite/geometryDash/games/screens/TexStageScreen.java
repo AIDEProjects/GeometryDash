@@ -25,6 +25,8 @@ public class TexStageScreen extends LinkScreen {
     private int dirRight;
     private float moveVel=300, velX;
 
+    private MyActor ground;
+
 
     public TexStageScreen(GsGame game) {
         super(game);
@@ -36,13 +38,59 @@ public class TexStageScreen extends LinkScreen {
         Gdx.input.setInputProcessor(stage);
         stage.addListener(new MyInputListener());
 
+        createPlayer();
+
+        createGround();
+    }
+
+    private void createPlayer() {
         Pixmap pm = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
         pm.setColor(Color.GREEN);
         pm.drawRectangle(0, 0, 9, 9);
         tex = new TextureRegion(new Texture(pm));
         player = new MyActor(tex);
-        player.setBounds(200, 200, 100, 100);
+        player.setBounds(200, 400, player.getWidth()*10, player.getHeight()*10);
         stage.addActor(player);
+    }
+
+    private void createGround() {
+
+        Pixmap pm = new Pixmap(140, 50, Pixmap.Format.RGBA8888);
+        pm.setColor(Color.BLUE);
+        /*
+        pm.drawLine(0, 7, 13, 7);
+        pm.drawLine(13, 7, 13, 0);
+        pm.drawLine(13, 0, 36, 0);
+        pm.drawLine(36, 0, 36, 7);
+        pm.drawLine(36, 7, 49, 7);
+        pm.drawLine(49, 7, 49, 19);
+        pm.drawLine(49, 19, 0, 19);
+        pm.drawLine(0, 19, 0, 7);
+        */
+        float[] lines={
+            
+            0, 0.1f, 
+            0, 0.45f, 
+            0.26f, 0.45f, 
+            0.45f, 1f, 
+            0.72f, 1f, 
+            0.72f, 0.45f, 
+            0.99f, 0.45f, 
+            0.99f, 0.1f, 
+            0, 0.1f
+        };
+        for (int i=0,i2=2;i < lines.length;i += 2, i2 = (i + 2) % lines.length) {
+            pm.drawLine(
+                (int)(lines[i] * pm.getWidth()), 
+                (int)((1-lines[i + 1]) * pm.getHeight()), 
+                (int)(lines[i2] * pm.getWidth()), 
+                (int)((1-lines[i2 + 1]) * pm.getHeight())
+            );
+        }
+        tex = new TextureRegion(new Texture(pm));
+        ground = new MyActor(tex);
+        ground.setBounds(400, 100, ground.getWidth()*10, ground.getHeight()*10);
+        stage.addActor(ground);
     }
 
     @Override
@@ -54,6 +102,7 @@ public class TexStageScreen extends LinkScreen {
 
         stage.act();
         stage.draw();
+
     }
 
     private void updateLogic() {
