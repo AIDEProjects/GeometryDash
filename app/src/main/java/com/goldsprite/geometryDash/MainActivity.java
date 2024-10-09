@@ -6,7 +6,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.goldsprite.geometryDash.games.MyGame;
+import com.goldsprite.geometryDash.games.GameLauncher;
 
 public class MainActivity extends AndroidApplication { 
 
@@ -18,7 +18,7 @@ public class MainActivity extends AndroidApplication {
         hideBlackBar(this);
         AndroidApplicationConfiguration conf = new AndroidApplicationConfiguration();
         conf.useImmersiveMode = true;
-		initialize(new MyGame(), conf);
+		initialize(new GameLauncher(), conf);
     }
 
     public static void hideBlackBar(Activity activity) {

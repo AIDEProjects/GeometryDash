@@ -17,6 +17,7 @@ public class LinkScreen extends ScreenAdapter {
     public Stage getUIStage() {return uiStage;}
     private ShapeRenderer shapeRenderer;
     private static TransitionEffect transitionEffect;
+    public float delta;
 
     public LinkScreen(GsGame game) {
         this.game = game;
@@ -25,8 +26,8 @@ public class LinkScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         if (transitionEffect == null)
             transitionEffect = new TransitionEffect();
-            else
-                transitionEffect.reset();
+        else
+            transitionEffect.reset();
     }
     public void setGame(GsGame game) {this.game = game;}
 
@@ -54,36 +55,37 @@ public class LinkScreen extends ScreenAdapter {
     }
     @Override
     public void render(float delta) {
+        this.delta = delta;
         Gdx.gl.glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]); // 清屏白色背景
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         getUIStage().act(delta);
         getUIStage().draw();
-        
-        if (transitionEffect.transitioning==-1) {
-            transitionEffect.blackScreenHeight+=transitionEffect.transitionSpeed*delta/2f;
+
+        if (transitionEffect.transitioning == -1) {
+            transitionEffect.blackScreenHeight += transitionEffect.transitionSpeed * delta / 2f;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0, 0, 0, 1);
-            shapeRenderer.rect(0, transitionEffect.blackScreenHeight, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()-transitionEffect.blackScreenHeight);
+            shapeRenderer.rect(0, transitionEffect.blackScreenHeight, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - transitionEffect.blackScreenHeight);
             shapeRenderer.end();
-            if(transitionEffect.blackScreenHeight > Gdx.graphics.getHeight()){
+            if (transitionEffect.blackScreenHeight > Gdx.graphics.getHeight()) {
                 transitionEffect.blackScreenHeight = 0;
-                transitionEffect.transitioning=0;
+                transitionEffect.transitioning = 0;
             }
         }
-        if (transitionEffect.transitioning==1) {
-            transitionEffect.blackScreenHeight+=transitionEffect.transitionSpeed*delta;
+        if (transitionEffect.transitioning == 1) {
+            transitionEffect.blackScreenHeight += transitionEffect.transitionSpeed * delta;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0, 0, 0, 1);
             shapeRenderer.rect(0, 0, transitionEffect.blackScreenHeight, Gdx.graphics.getHeight());
             shapeRenderer.end();
-            if(transitionEffect.blackScreenHeight >Gdx.graphics.getWidth()*2){
+            if (transitionEffect.blackScreenHeight > Gdx.graphics.getWidth() * 2) {
                 cgScreen();
             }
         }
     }
-    
-    public void cgScreen(){
+
+    public void cgScreen() {
         getGame().setScreen(nextScreen);
         transitionEffect.reset();
     }
