@@ -55,7 +55,7 @@ public class TexStageScreen extends LinkScreen {
 
     private void createGround() {
 
-        Pixmap pm = new Pixmap(140, 50, Pixmap.Format.RGBA8888);
+        Pixmap pm = new Pixmap(180, 50, Pixmap.Format.RGBA8888);
         pm.setColor(Color.BLUE);
         /*
         pm.drawLine(0, 7, 13, 7);
@@ -71,9 +71,9 @@ public class TexStageScreen extends LinkScreen {
             
             0, 0.1f, 
             0, 0.45f, 
-            0.26f, 0.45f, 
-            0.45f, 1f, 
-            0.72f, 1f, 
+            0.46f, 0.45f, 
+            0.46f, 0.7f, 
+            0.72f, 0.7f, 
             0.72f, 0.45f, 
             0.99f, 0.45f, 
             0.99f, 0.1f, 
@@ -89,7 +89,7 @@ public class TexStageScreen extends LinkScreen {
         }
         tex = new TextureRegion(new Texture(pm));
         ground = new MyActor(tex);
-        ground.setBounds(400, 100, ground.getWidth()*10, ground.getHeight()*10);
+        ground.setBounds(200, 100, ground.getWidth()*10, ground.getHeight()*10);
         stage.addActor(ground);
     }
 
