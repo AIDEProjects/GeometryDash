@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+*.dex
 
 # Log file
 *.log
@@ -24,4 +25,5 @@ replay_pid*
 
 
 build/
+!build/bin/
 !build/bin/*.apk
