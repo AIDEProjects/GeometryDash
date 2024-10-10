@@ -120,8 +120,8 @@ public class TexStageScreen extends LinkScreen {
         
         //单步碰撞测试
         if(touchScreen){
-            touchScreen=false;
-            float delta = 1/60f * 4f * 10f;
+            //touchScreen=false;
+            float delta = 1/60f * 4f * 1f;
             
             Rectangle rec1 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
             rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);

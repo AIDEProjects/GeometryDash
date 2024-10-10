@@ -20,6 +20,8 @@ public class MainActivity extends AndroidApplication {
 
     TextView debugTxt;
     
+    String debugString="DebugTxt";
+    
     ScrollView debugScrollView;
     
     boolean showDebugTxt=true;
@@ -59,13 +61,14 @@ public class MainActivity extends AndroidApplication {
     }
 
     public static void setDebugTxt(final String str) {
+        instance.debugString = str;
         instance.runOnUiThread(new Runnable(){public void run() {
-                    instance.debugTxt.setText(str);
+                    instance.debugTxt.setText(instance.debugString);
                     instance.debugScrollView.fullScroll(View.FOCUS_DOWN);
                 }});
     }
     public static void addDebugTxt(final String str) {
-        setDebugTxt(instance.debugTxt.getText()+"\n"+str);
+        setDebugTxt(instance.debugString+"\n"+str);
     }
 
 } 
