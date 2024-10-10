@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:18
+-keep class com.goldsprite.geometryDash.MainActivity { <init>(...); }
+
+# onClick res/layout/activity_main.xml #generated:19
+-keepclassmembers class * { *** cgDebugTxt(...); }
+
