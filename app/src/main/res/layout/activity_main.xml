@@ -24,7 +24,7 @@
 			android:background="#FFD5D5D5"/>
 
 		<ScrollView
-			android:background="#FFFEE3E3"
+			android:background="#9CFEE3E3"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/debugScrollView">
@@ -34,7 +34,8 @@
 				android:layout_height="wrap_content"
 				android:text="DebugText"
 				android:textSize="14dp"
-				android:id="@+id/debugTxt"/>
+				android:id="@+id/debugTxt"
+				android:textColor="#98000000"/>
 
 		</ScrollView>
 

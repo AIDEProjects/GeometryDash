@@ -91,7 +91,7 @@ public class Rectangle {
 
         //竖直线斜率无限大，水平线斜率0(计算xy无限大)
         if (!Float.isInfinite(backLength) && intersects(new Rectangle(afterPos.add(velBack), width, height), other)) {
-            face = deltaVel.y > 0 ?2: 0;
+            face = deltaVel.y > 0 ?0: 2;
             tranVel = new Vector2(-velBack.x, -velBack.y * 0);
         } else {
             velBack = new Vector2(depX, m * depX);
@@ -110,8 +110,8 @@ public class Rectangle {
 
 
     public int resolveCollisionWithCompositeRect(float delta, CompositeRect other) {
+        int tempFace = -1;
         try {
-            face = -1;
             //预计下帧位置
             Vector2 deltaVel = velocity.multiply(delta);
             float deltaVelMagnitude = deltaVel.magnitude();
@@ -126,11 +126,11 @@ public class Rectangle {
 
             Vector2 minFinalVel=deltaVel;
             float minFinalVelMagnitude=deltaVelMagnitude;
-            int tempFace;
-            for (int i=0;i < other.vertices.length / 2-1;i++) {
-                tempFace = -1;
+            for (int i=0;i < other.vertices.length / 2;i++) {
+                face = -1;
                 Line line = other.getEdge(i);
-
+                
+                Rectangle rec = this;
                 Vector2 finalVel=new Vector2();
                 Vector2 velBack =new Vector2();//回退量
                 float backLength;
@@ -144,15 +144,13 @@ public class Rectangle {
                 velBack = new Vector2(mappingX, depY);
                 backLength = velBack.magnitude();
                 backMagnitude = deltaVel.add(velBack).magnitude();
-                Rectangle backRec = new Rectangle(afterPos, width, height);
-                if (!Float.isInfinite(backLength)
-                    && backMagnitude <= deltaVelMagnitude
-                    && (backRec.leftX() < line.maxX() && backRec.rightX() > line.minX())) {
-                    tempFace = deltaVel.y > 0 ?0: 2;
+                if(!Float.isInfinite(backLength) && backMagnitude <= deltaVelMagnitude
+                   && ((deltaVel.y<0&&rec.bottomY()>=line.maxY()) || (deltaVel.y>0&&rec.topY()<=line.minY()))
+                   && (!(line.minX()>=rightX() || line.maxX() <= leftX()))
+                   ){
+                    face = deltaVel.y > 0 ?0: 2;
                     tranVel = new Vector2(-velBack.x, -velBack.y * 0);
-                    MainActivity.addDebugTxt("velBack: " + velBack + ", collEdge: " + i + "face: "+tempFace);
-                    MainActivity.addDebugTxt("backRec.leftX()"+backRec.leftX()+", line.maxX()"+line.maxX()+", backRec.rightX()"+backRec.rightX()+", line.minX()"+line.minX());
-                } else {
+                }else{
                     //贴边x
                     float depX = deltaVel.x > 0
                         ?line.minX() - afterRec.rightX()
@@ -161,24 +159,23 @@ public class Rectangle {
                     velBack = new Vector2(depX, mappingY);
                     backLength = velBack.magnitude();
                     backMagnitude = deltaVel.add(velBack).magnitude();
-                    if (!Float.isInfinite(backLength)
-                        && backMagnitude <= deltaVelMagnitude
-                        && (backRec.bottomY() <= line.maxY() && backRec.topY() >= line.minY())) {
-                        tempFace = deltaVel.x > 0 ?3: 1;
+                    if(!Float.isInfinite(backLength) && backMagnitude <= deltaVelMagnitude
+                       && ((deltaVel.x<0&&rec.leftX()>=line.maxX()) || (deltaVel.x>0&&rec.rightX()<=line.minX()))
+                       && (!(line.minY()>=topY() || line.maxY() <= bottomY()))
+                       ){
+                        face = deltaVel.x > 0 ?3: 1;
                         tranVel = new Vector2(-velBack.x * 0, -velBack.y);
-                        MainActivity.addDebugTxt("velBack: " + velBack + ", collEdge: " + i + "face: "+tempFace);
-                        MainActivity.addDebugTxt("backRec.bottomY()"+backRec.bottomY()+", line.maxY()"+line.maxY()+", backRec.topY()"+backRec.topY()+", line.minY()"+line.minY());
                     }
                 }
 
-                if (tempFace != -1) {
+                if (face != -1) {
                     //最终速度
-                    //MainActivity.addDebugTxt(deltaVel+", "+velBack+", "+tranVel);
+                    MainActivity.addDebugTxt("coll: "+face+", velBack: "+velBack);
                     finalVel = deltaVel.add(velBack).add(tranVel);
                     float finalVelMagnitude = finalVel.magnitude();
                     boolean lower = finalVelMagnitude <= minFinalVelMagnitude;
                     minFinalVel = lower ? finalVel : minFinalVel;
-                    face = lower ?tempFace: face;
+                    tempFace = lower ?face: tempFace;
                     minFinalVelMagnitude = minFinalVel.magnitude();
                 }
             }
@@ -189,7 +186,7 @@ public class Rectangle {
             e.printStackTrace(new PrintWriter(sw));
             MainActivity.addDebugTxt(sw.toString());
         }
-        return face;
+        return tempFace;
     }
 
     public static int collisionWithLine(Rectangle rec, float delta, Line line) {

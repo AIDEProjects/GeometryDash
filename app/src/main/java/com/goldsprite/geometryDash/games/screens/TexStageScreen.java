@@ -54,16 +54,16 @@ public class TexStageScreen extends LinkScreen {
     private void createPlayer() {
         Pixmap pm = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
         pm.setColor(Color.GREEN);
-        pm.drawRectangle(0, 0, 9, 9);
+        pm.drawRectangle(0, 0, 10, 10);
         tex = new TextureRegion(new Texture(pm));
         player = new MyActor(tex);
-        player.setBounds(815, 350, player.getWidth()*10, player.getHeight()*10);
+        player.setBounds(815, 850, player.getWidth()*10, player.getHeight()*10);
         stage.addActor(player);
     }
 
     private void createGround() {
 
-        Pixmap pm = new Pixmap(180, 50, Pixmap.Format.RGBA8888);
+        Pixmap pm = new Pixmap(160, 50, Pixmap.Format.RGBA8888);
         pm.setColor(Color.BLUE);
         /*
         pm.drawLine(0, 7, 13, 7);
@@ -76,15 +76,14 @@ public class TexStageScreen extends LinkScreen {
         pm.drawLine(0, 19, 0, 7);
         */
         float[] lines={
-            0, 0f, 
-            0, 0.45f, 
-            0.46f, 0.45f, 
-            0.46f, 0.7f, 
-            0.72f, 0.7f, 
-            0.72f, 0.45f, 
-            1f, 0.45f, 
-            1f, 0f, 
-            0, 0f
+            0, 0, 
+            1, 0, 
+            1, 0.8f, 
+            0.7f, 0.8f, 
+            0.7f, 1, 
+            0.3f, 1, 
+            0.3f, 0.8f, 
+            0, 0.8f
         };
         for (int i=0,i2=2;i < lines.length;i += 2, i2 = (i + 2) % lines.length) {
 
@@ -100,7 +99,7 @@ public class TexStageScreen extends LinkScreen {
         }
         tex = new TextureRegion(new Texture(pm));
         ground = new MyActor(tex);
-        ground.setBounds(200, 100, ground.getWidth()*10, ground.getHeight()*10);
+        ground.setBounds(350, 200, ground.getWidth()*10, ground.getHeight()*10);
         crec = new CompositeRect(lines, ground.getX(), ground.getY(), ground.getWidth(), ground.getHeight());
         stage.addActor(ground);
     }
@@ -122,7 +121,7 @@ public class TexStageScreen extends LinkScreen {
         //单步碰撞测试
         if(touchScreen){
             touchScreen=false;
-            float delta = 1/60f * 8f;
+            float delta = 1/60f * 4f * 10f;
             
             Rectangle rec1 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
             rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);
@@ -130,18 +129,11 @@ public class TexStageScreen extends LinkScreen {
             boolean isColl = -1!=rec1.resolveCollisionWithCompositeRect(delta, crec);
             Vector2 oldPos=rec1.position;
             Vector2 perTrans;//每次位移量
-
-            //rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);
+            
             rec1.move(delta);
             player.setPosition(rec1.position.x, rec1.position.y);
             perTrans = rec1.position.subtract(oldPos);
            
-            /*
-            MainActivity.toast(
-                "单次实际位移: "+("Coll-"+rec1.face)+": (" + perTrans.x + ", " +perTrans.y + ")" 
-                +"\n"+
-                "现位置：\n"+rec1
-            );*/
         }
     }
 
