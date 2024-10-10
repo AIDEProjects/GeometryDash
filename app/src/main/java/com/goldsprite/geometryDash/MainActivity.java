@@ -7,18 +7,43 @@ import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.goldsprite.geometryDash.games.GameLauncher;
+import android.widget.TextView;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 public class MainActivity extends AndroidApplication { 
-
     static MainActivity instance;
+
+    LinearLayout gameLayout;
+
+    TextView debugTxt;
+    
+    ScrollView debugScrollView;
+    
+    boolean showDebugTxt=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         instance = this;
         hideBlackBar(this);
         AndroidApplicationConfiguration conf = new AndroidApplicationConfiguration();
         conf.useImmersiveMode = true;
-		initialize(new GameLauncher(), conf);
+		View gameView = initializeForView(new GameLauncher(), conf);
+
+        gameLayout = findViewById(R.id.mainLayout);
+        gameLayout.addView(gameView);
+
+        debugTxt = findViewById(R.id.debugTxt);
+        debugScrollView = findViewById(R.id.debugScrollView);
+    }
+    
+    public void cgDebugTxt(View v){
+        showDebugTxt = !showDebugTxt;
+        debugTxt.setVisibility(showDebugTxt ? TextView.VISIBLE : TextView.GONE);
     }
 
     public static void hideBlackBar(Activity activity) {
@@ -31,6 +56,16 @@ public class MainActivity extends AndroidApplication {
         instance.runOnUiThread(new Runnable(){public void run() {
                     Toast.makeText(instance, str, Toast.LENGTH_SHORT).show();
                 }});
+    }
+
+    public static void setDebugTxt(final String str) {
+        instance.runOnUiThread(new Runnable(){public void run() {
+                    instance.debugTxt.setText(str);
+                    instance.debugScrollView.fullScroll(View.FOCUS_DOWN);
+                }});
+    }
+    public static void addDebugTxt(final String str) {
+        setDebugTxt(instance.debugTxt.getText()+"\n"+str);
     }
 
 } 

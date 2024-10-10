@@ -1,17 +1,19 @@
 package com.goldsprite.geometryDash.games.screens;
-import com.badlogic.gdx.ScreenAdapter;
-import com.goldsprite.libgdxEngine.core.scene2d.LinkScreen;
-import com.goldsprite.libgdxEngine.core.scene2d.GsGame;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.Texture;
-import com.goldsprite.libgdxEngine.core.scene2d.actors.MyActor;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.goldsprite.libgdxEngine.core.math.CompositeRect;
+import com.goldsprite.libgdxEngine.core.math.Rectangle;
+import com.goldsprite.libgdxEngine.core.math.Vector2;
+import com.goldsprite.libgdxEngine.core.scene2d.GsGame;
+import com.goldsprite.libgdxEngine.core.scene2d.LinkScreen;
+import com.goldsprite.libgdxEngine.core.scene2d.actors.MyActor;
 import com.goldsprite.geometryDash.MainActivity;
 
 public class TexStageScreen extends LinkScreen {
@@ -26,6 +28,12 @@ public class TexStageScreen extends LinkScreen {
     private float moveVel=300, velX;
 
     private MyActor ground;
+    
+    private boolean touchScreen;
+
+    private CompositeRect crec;
+    
+    private Vector2 dir = new Vector2(0, 0);
 
 
     public TexStageScreen(GsGame game) {
@@ -49,7 +57,7 @@ public class TexStageScreen extends LinkScreen {
         pm.drawRectangle(0, 0, 9, 9);
         tex = new TextureRegion(new Texture(pm));
         player = new MyActor(tex);
-        player.setBounds(200, 400, player.getWidth()*10, player.getHeight()*10);
+        player.setBounds(815, 350, player.getWidth()*10, player.getHeight()*10);
         stage.addActor(player);
     }
 
@@ -68,28 +76,32 @@ public class TexStageScreen extends LinkScreen {
         pm.drawLine(0, 19, 0, 7);
         */
         float[] lines={
-            
-            0, 0.1f, 
+            0, 0f, 
             0, 0.45f, 
             0.46f, 0.45f, 
             0.46f, 0.7f, 
             0.72f, 0.7f, 
             0.72f, 0.45f, 
-            0.99f, 0.45f, 
-            0.99f, 0.1f, 
-            0, 0.1f
+            1f, 0.45f, 
+            1f, 0f, 
+            0, 0f
         };
         for (int i=0,i2=2;i < lines.length;i += 2, i2 = (i + 2) % lines.length) {
-            pm.drawLine(
-                (int)(lines[i] * pm.getWidth()), 
-                (int)((1-lines[i + 1]) * pm.getHeight()), 
-                (int)(lines[i2] * pm.getWidth()), 
-                (int)((1-lines[i2 + 1]) * pm.getHeight())
-            );
+
+            int x1 = (int)(lines[i] * pm.getWidth()), 
+                y1 = (int)((1-lines[i + 1]) * pm.getHeight()), 
+                x2 = (int)(lines[i2] * pm.getWidth()), 
+                y2 = (int)((1-lines[i2 + 1]) * pm.getHeight());
+            x1=x1>=pm.getWidth()?pm.getWidth()-1:x1;
+            x2=x2>=pm.getWidth()?pm.getWidth()-1:x2;
+            y1=y1>=pm.getHeight()?pm.getHeight()-1:y1;
+            y2=y2>=pm.getHeight()?pm.getHeight()-1:y2;
+            pm.drawLine(x1, y1, x2, y2);
         }
         tex = new TextureRegion(new Texture(pm));
         ground = new MyActor(tex);
         ground.setBounds(200, 100, ground.getWidth()*10, ground.getHeight()*10);
+        crec = new CompositeRect(lines, ground.getX(), ground.getY(), ground.getWidth(), ground.getHeight());
         stage.addActor(ground);
     }
 
@@ -106,10 +118,31 @@ public class TexStageScreen extends LinkScreen {
     }
 
     private void updateLogic() {
-        //更新速度
-        velX = moveVel * (dirRight == 0 ?0: (dirRight > 0 ?1: -1));
-        //根据速度，更新位置
-        player.setPosition(player.getX() + velX * delta, player.getY());
+        
+        //单步碰撞测试
+        if(touchScreen){
+            touchScreen=false;
+            float delta = 1/60f * 8f;
+            
+            Rectangle rec1 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+            rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);
+
+            boolean isColl = -1!=rec1.resolveCollisionWithCompositeRect(delta, crec);
+            Vector2 oldPos=rec1.position;
+            Vector2 perTrans;//每次位移量
+
+            //rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);
+            rec1.move(delta);
+            player.setPosition(rec1.position.x, rec1.position.y);
+            perTrans = rec1.position.subtract(oldPos);
+           
+            /*
+            MainActivity.toast(
+                "单次实际位移: "+("Coll-"+rec1.face)+": (" + perTrans.x + ", " +perTrans.y + ")" 
+                +"\n"+
+                "现位置：\n"+rec1
+            );*/
+        }
     }
 
 
@@ -119,12 +152,15 @@ public class TexStageScreen extends LinkScreen {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             handlePlayerInput(x, y);
+            touchScreen=true;
             return true;
         }
 
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             dirRight = 0;
+            touchScreen=false;
+            dir = dir.multiply(0);
             super.touchUp(event, x, y, pointer, button);
         }
 
@@ -133,9 +169,11 @@ public class TexStageScreen extends LinkScreen {
             if (y < Gdx.graphics.getHeight() / 2f) {
                 //左或右
                 dirRight = x > Gdx.graphics.getWidth() / 2f ?1: -1;
+                dir.x = x > Gdx.graphics.getWidth() / 2f ?1: -1;
             } else {
                 //上方
                 System.out.println("jump");
+                dir.y = x > Gdx.graphics.getWidth() / 2f ?1: -1;
             }
         }
 
