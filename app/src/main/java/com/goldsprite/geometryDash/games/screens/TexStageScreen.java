@@ -58,7 +58,7 @@ public class TexStageScreen extends LinkScreen {
         pm.drawRectangle(0, 0, 10, 10);
         tex = new TextureRegion(new Texture(pm));
         player = new MyActor(tex);
-        player.setBounds(1950, 200, player.getWidth()*10, player.getHeight()*10);
+        player.setBounds(1980, 200, player.getWidth()*10, player.getHeight()*10);
         stage.addActor(player);
     }
 
