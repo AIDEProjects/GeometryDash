@@ -13,6 +13,8 @@ public class Vector2 {
         this.x = x;
         this.y = y;
     }
+    
+    
 
     public Vector2 multiply(float mul) {
         return new Vector2(x * mul, y * mul);
@@ -41,6 +43,16 @@ public class Vector2 {
 
     public static float dotProduct(Vector2 a, Vector2 b) {
         return a.x * b.x + a.y * b.y;
+    }
+    
+    
+    public static Vector2 up = new Vector2(0, 1);
+    public static Vector2 left = new Vector2(-1, 0);
+    public static Vector2 down = new Vector2(0, -1);
+    public static Vector2 right = new Vector2(1, 0);
+
+    public boolean equals(Vector2 vec) {
+        return vec.x==this.x && vec.y ==y;
     }
 
     @Override

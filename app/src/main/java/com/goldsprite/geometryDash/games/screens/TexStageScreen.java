@@ -15,6 +15,7 @@ import com.goldsprite.libgdxEngine.core.scene2d.GsGame;
 import com.goldsprite.libgdxEngine.core.scene2d.LinkScreen;
 import com.goldsprite.libgdxEngine.core.scene2d.actors.MyActor;
 import com.goldsprite.geometryDash.MainActivity;
+import com.goldsprite.libgdxEngine.core.math.Line;
 
 public class TexStageScreen extends LinkScreen {
     ShapeRenderer shapeRender = new ShapeRenderer();
@@ -66,42 +67,65 @@ public class TexStageScreen extends LinkScreen {
         Pixmap pm = new Pixmap(160, 50, Pixmap.Format.RGBA8888);
         pm.setColor(Color.BLUE);
         /*
-        pm.drawLine(0, 7, 13, 7);
-        pm.drawLine(13, 7, 13, 0);
-        pm.drawLine(13, 0, 36, 0);
-        pm.drawLine(36, 0, 36, 7);
-        pm.drawLine(36, 7, 49, 7);
-        pm.drawLine(49, 7, 49, 19);
-        pm.drawLine(49, 19, 0, 19);
-        pm.drawLine(0, 19, 0, 7);
-        */
         float[] lines={
             0, 0, 
             1, 0, 
-            1, 0.8f, 
-            0.7f, 0.8f, 
-            0.7f, 1, 
-            0.3f, 1, 
-            0.3f, 0.8f, 
-            0, 0.8f
+            1, 1, 
+            0, 1
         };
+        */
+        int pmW=pm.getWidth(), pmH=pm.getHeight();
+         float[] lines={
+         0, 0, 
+         0.2f, 0, 
+         0.2f, 0.3f, 
+         0.4f, 0.3f, 
+         0.4f, 0, 
+         1, 0, 
+         1, 0.8f, 
+         0.7f, 0.8f, 
+         0.7f, 1, 
+         0.3f, 1, 
+         0.3f, 0.8f, 
+         0, 0.8f
+         };
+        float[] edges = new float[lines.length];
         for (int i=0,i2=2;i < lines.length;i += 2, i2 = (i + 2) % lines.length) {
-
-            int x1 = (int)(lines[i] * pm.getWidth()), 
-                y1 = (int)((1-lines[i + 1]) * pm.getHeight()), 
-                x2 = (int)(lines[i2] * pm.getWidth()), 
-                y2 = (int)((1-lines[i2 + 1]) * pm.getHeight());
-            x1=x1>=pm.getWidth()?pm.getWidth()-1:x1;
-            x2=x2>=pm.getWidth()?pm.getWidth()-1:x2;
-            y1=y1>=pm.getHeight()?pm.getHeight()-1:y1;
-            y2=y2>=pm.getHeight()?pm.getHeight()-1:y2;
-            pm.drawLine(x1, y1, x2, y2);
+            edges[i] = lines[i] * pmW;
+            edges[i+1] = lines[i+1] * pmH;
+            edges[i2] = lines[i] * pmW;
+            edges[i2+1] = lines[i2+1] * pmH;
+        }
+        for (int i=0,i2=2;i < edges.length;i += 2, i2 = (i + 2) % edges.length) {
+            Line edge = new Line(edges[i], edges[i+1], edges[i2], edges[i2+1]);
+            edge = fixOutEdge(edge, -1);
+            edges[i] = edge.start.x;
+            edges[i+1] = edge.start.y;
+            edges[i2] = edge.end.x;
+            edges[i2+1] = edge.end.y;
+        }
+        for (int i=0,i2=2;i < edges.length;i += 2, i2 = (i + 2) % edges.length) {
+            pm.drawLine((int)edges[i], pmH-(int)edges[i+1], (int)edges[i2], pmH-(int)edges[i2+1]);
         }
         tex = new TextureRegion(new Texture(pm));
         ground = new MyActor(tex);
         ground.setBounds(350, 200, ground.getWidth()*10, ground.getHeight()*10);
         crec = new CompositeRect(lines, ground.getX(), ground.getY(), ground.getWidth(), ground.getHeight());
         stage.addActor(ground);
+    }
+
+    private Line fixOutEdge(Line edge, int dir) {
+        Vector2 normalVec = edge.normalVector();
+        Vector2 normal = normalVec.normalize();
+        
+        
+        if(normal.equals(Vector2.down)){
+            edge.add(Vector2.up);
+        }
+        if(normal.equals(Vector2.right)){
+            edge.add(Vector2.left);
+        }
+        return edge;
     }
 
     @Override

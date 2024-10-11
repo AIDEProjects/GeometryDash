@@ -30,6 +30,13 @@ public class Line
         end.y *= scl.y;
         return this;
     }
+    
+    public Line add(Vector2 vec){
+        start = start.add(vec);
+        end = end.add(vec);
+        return this;
+    }
+    
     public Line move(Vector2 trans){
         start = start.add(trans);
         end = end.add(trans);
@@ -50,6 +57,14 @@ public class Line
         float x = start.x;
         float b = y - k() * x;
         return b;
+    }
+    
+    public Vector2 normalVector(){
+        return new Vector2(vecY(), -vecX());
+    }
+    
+    public Vector2 normal(){
+        return normalVector().normalize();
     }
     
     @Override
