@@ -84,7 +84,8 @@ public class Rectangle {
                 velBack = new Vector2(mappingX, depY);
                 backLength = velBack.magnitude();
                 backMagnitude = deltaVel.add(velBack).magnitude();
-                if(!Float.isInfinite(backLength) && backMagnitude <= deltaVelMagnitude
+                if(!Float.isInfinite(backLength) 
+                    //&& backMagnitude <= deltaVelMagnitude
                    && ((deltaVel.y<0&&rec.bottomY()>=line.maxY()) || (deltaVel.y>0&&rec.topY()<=line.minY()))
                    && (!(line.minX()>=rightX() || line.maxX() <= leftX()))
                    ){
@@ -99,7 +100,8 @@ public class Rectangle {
                     velBack = new Vector2(depX, mappingY);
                     backLength = velBack.magnitude();
                     backMagnitude = deltaVel.add(velBack).magnitude();
-                    if(!Float.isInfinite(backLength) && backMagnitude <= deltaVelMagnitude
+                    if(!Float.isInfinite(backLength) 
+                        //&& backMagnitude <= deltaVelMagnitude
                        && ((deltaVel.x<0&&rec.leftX()>=line.maxX()) || (deltaVel.x>0&&rec.rightX()<=line.minX()))
                        && (!(line.minY()>=topY() || line.maxY() <= bottomY()))
                        ){
@@ -117,10 +119,10 @@ public class Rectangle {
                     tempFace = lower ?face: tempFace;
                     collEdge = lower ? i : collEdge;
                     minFinalVelMagnitude = minFinalVel.magnitude();
-                    MainActivity.addDebugTxt("collEdge: "+i+", face: "+faceString(face)+", planVel: "+deltaVel+", realVel: "+finalVel);
+                    //MainActivity.addDebugTxt("collEdge: "+i+", face: "+faceString(face)+", planVel: "+deltaVel+", realVel: "+finalVel);
                 }
             }
-            MainActivity.addDebugTxt("realCollEdge: "+collEdge+", finalFace: "+faceString(tempFace)+", planVel: "+deltaVel+", realVel: "+minFinalVel);
+            //MainActivity.addDebugTxt("realCollEdge: "+collEdge+", finalFace: "+faceString(tempFace)+", planVel: "+deltaVel+", realVel: "+minFinalVel);
             velocity = minFinalVel.devideBy(delta);//还原为每秒速度 vel/s
 
         } catch (Exception e) {
