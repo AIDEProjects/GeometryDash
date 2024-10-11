@@ -144,15 +144,13 @@ public class TexStageScreen extends LinkScreen {
         
         //单步碰撞测试
         if(touchScreen){
-            //touchScreen=false;
-            float delta = 1/60f * 4f * 0.2f;
+            touchScreen=false;
+            float delta = 1/60f * 4f * 4f;
             
             Rectangle rec1 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
             rec1.velocity = new Vector2(moveVel * dir.x, moveVel * dir.y);
 
             boolean isColl = -1!=rec1.resolveCollisionWithCompositeRect(delta, crec);
-            rec1.move(delta);
-            isColl = -1!=rec1.resolveCollisionWithCompositeRect(delta, crec);
             Vector2 oldPos=rec1.position;
             Vector2 perTrans;//每次位移量
             
@@ -163,7 +161,7 @@ public class TexStageScreen extends LinkScreen {
         }
     }
 
-
+    
     public class MyInputListener extends InputListener {
 
         //原点在左下角
