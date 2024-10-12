@@ -1,6 +1,12 @@
 # view AndroidManifest.xml #generated:18
 -keep class com.goldsprite.geometryDash.MainActivity { <init>(...); }
 
-# onClick res/layout/activity_main.xml #generated:19
+# view res/layout/activity_main.xml #generated:48
+-keep class com.goldsprite.geometryDash.NoScrollScrollView { <init>(...); }
+
+# onClick res/layout/activity_main.xml #generated:33
 -keepclassmembers class * { *** cgDebugTxt(...); }
+
+# onClick res/layout/activity_main.xml #generated:39
+-keepclassmembers class * { *** cgTouch(...); }
 

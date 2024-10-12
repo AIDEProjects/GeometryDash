@@ -5,39 +5,67 @@
 	android:layout_height="match_parent">
 
 	<LinearLayout
-		android:id="@+id/mainLayout"
+		android:id="@+id/gameLayout"
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 
+	<SeekBar
+		android:id="@+id/collDeathZoneBar"
+		android:layout_width="150dp"
+		android:layout_height="wrap_content"
+        android:progress="30"
+		android:max="100"
+		android:layout_alignParentRight="true"
+		android:layout_margin="20dp"/>
+
 	<LinearLayout
 		android:layout_margin="10dp"
 		android:orientation="vertical"
-		android:layout_width="wrap_content"
+		android:layout_width="300dp"
 		android:layout_height="wrap_content">
 
-		<Button
+		<LinearLayout
+			android:orientation="horizontal"
 			android:layout_width="match_parent"
-			android:layout_height="30dp"
-			android:text=""
-			android:onClick="cgDebugTxt"
-			android:background="#FFD5D5D5"/>
+			android:layout_height="wrap_content">
 
-		<ScrollView
+			<Button
+				android:layout_width="60dp"
+				android:layout_height="30dp"
+				android:onClick="cgDebugTxt"
+				android:background="#FFD5D5D5"/>
+
+			<Button
+				android:layout_width="60dp"
+				android:layout_height="30dp"
+				android:text=""
+				android:onClick="cgTouch"
+				android:background="#FFD5D5D5"/>
+
+		</LinearLayout>
+
+		<com.goldsprite.geometryDash.NoScrollScrollView
 			android:background="#9CFEE3E3"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/debugScrollView">
 
-			<TextView
+			<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="DebugText"
-				android:textSize="14dp"
-				android:id="@+id/debugTxt"
-				android:textColor="#98000000"/>
+				android:layout_height="wrap_content">
 
-		</ScrollView>
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="DebugText"
+					android:textSize="14dp"
+					android:id="@+id/debugTxt"
+					android:textColor="#98000000"/>
+
+			</LinearLayout>
+
+		</com.goldsprite.geometryDash.NoScrollScrollView>
 
 	</LinearLayout>
 
