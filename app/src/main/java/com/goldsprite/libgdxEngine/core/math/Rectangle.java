@@ -62,9 +62,9 @@ public class Rectangle {
 
     //复合矩形边列表必须符合逆时针绘制顺序，以便法向判定无误
     public int resolveCollisionWithCompositeRect(float delta, CompositeRect other) {
-        MainActivity.setDebugTxt("");
-        MainActivity.addDebugTxt("recPos: "+position);
+        MainActivity.setDebugTxt("recPos: "+position);
         MainActivity.addDebugTxt("collDeachZonePercent: "+(MainActivity.collDeathZone*100)+"%, halfCollDeachZone: "+halfCollDeathZone());
+        MainActivity.addDebugTxt("collSafeDistancePercent: "+(MainActivity.collSafeDistance*100)+"%");
         try {
             //预计下帧位置
             Vector2 deltaVel = velocity.multiply(delta);
@@ -111,6 +111,7 @@ public class Rectangle {
                     oppsiteNormal = deltaVel.y > 0 ? lineNormal.equals(Vector2.down): lineNormal.equals(Vector2.up);//排除同法向边，即平行边，选择垂直边判断
                     inLineX = !(backRec.leftX() + halfCollDeathZone() >= line.maxX() || backRec.rightX() - halfCollDeathZone() <= line.minX());//排除贴边后在线外无碰撞, 这里不写=会造成卡边
                     inRectY = (deltaVel.y > 0 && rec.topY()-halfCollDeathZone() <= line.minY()) || (deltaVel.y < 0 && rec.bottomY()+halfCollDeathZone() >= line.maxY());//(已放弃，无法应对单步速度过快情况，会产生无接触穿透)排除背后边，这里使用保守判断/绝大部分陷入也吃判断(会造成回退过多倒退)，激进型会造成过线一点点就不阻挡了
+                    //inRectY = (deltaVel.y > 0 && rec.bottomY()-halfCollDeathZone() <= line.minY()) || (deltaVel.y < 0 && rec.topY()+halfCollDeathZone() >= line.maxY());
                     oppsite = Math.signum(deltaVel.y) != Math.signum(velBack.y);//排除距离不够
                     backOutof = backLength > deltaVelMagnitude;//回退超出原速度，排除类似往右却退到背后右墙情况，
                     if (oppsiteNormal && (inRectY || !backOutof) && inLineX && oppsite) {
@@ -139,7 +140,8 @@ public class Rectangle {
                     backRec = new Rectangle(afterRec.position.add(velBack), width, height);
                     oppsiteNormal = deltaVel.x > 0 ? lineNormal.equals(Vector2.left): lineNormal.equals(Vector2.right);//排除同法向边，即平行边，选择垂直边判断
                     inLineY = !(line.maxY() < backRec.bottomY() + halfCollDeathZone() || line.minY() > backRec.topY() - halfCollDeathZone());
-                    inRectX = (deltaVel.x > 0 && rec.rightX()-halfCollDeathZone() <= line.minX()) || (deltaVel.x < 0 && rec.leftX()+halfCollDeathZone() >= line.maxX());
+                    inRectX = (deltaVel.x > 0 && rec.rightX()-halfCollDeathZone() <= line.minX()) || (deltaVel.x < 0 && rec.leftX()+halfCollDeathZone() >= line.maxX());//保守(会穿)
+                    //inRectX = (deltaVel.x > 0 && rec.leftX()-halfCollDeathZone() <= line.minX()) || (deltaVel.x < 0 && rec.rightX()+halfCollDeathZone() >= line.maxX());//激进(可能回扯)
                     oppsite = Math.signum(deltaVel.x) != Math.signum(velBack.x);
                     backOutof = backLength > deltaVelMagnitude;
                     if (oppsiteNormal && (inRectX || !backOutof) && inLineY && oppsite) {
@@ -213,7 +215,12 @@ public class Rectangle {
                 + "\n阻挡后速度: " + finalVel
                 + "\n"
             );
-            finalVel = finalVel.subtract(finalVel.normalize().multiply(0.05f));//为了解决浮点数精度不精导致的略微嵌入问题
+            //finalVel = finalVel.subtract(finalVel.normalize().multiply(0.15f));
+            finalVel = finalVel.subtract(
+                collEdge.isZero()?Vector2.zero() 
+                : new Vector2(Math.signum(finalVel.x), Math.signum(finalVel.y))
+                .multiply(MainActivity.collSafeDistance*10)//最大10px
+            );//为了解决浮点数精度不精导致的略微嵌入问题
             velocity = finalVel.devideBy(delta);//还原为每秒速度 vel/s
 
         } catch (Exception e) {

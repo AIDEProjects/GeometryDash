@@ -18,6 +18,7 @@ import android.widget.ToggleButton;
 public class MainActivity extends AndroidApplication { 
     static MainActivity instance;
 
+    public static String VersionCode = "VersionCode: 241012_v3";
     LinearLayout gameLayout;
 
     TextView debugTxt;
@@ -28,13 +29,17 @@ public class MainActivity extends AndroidApplication {
 
     boolean showDebugTxt=true, isTouchable=true;
 
-    SeekBar bar, playerVel;
+    SeekBar bar, playerVel, collSafeDistanceBar;
 
-    public static float collDeathZone, playerVelVal;
+    public static float collDeathZone, //碰撞忽略区域
+    playerVelVal, //玩家移速，默认30%
+    collSafeDistance;//碰撞安全阈值，默认20%
 
     private LinearLayout rightDebugLayout;
-    
+
     public static boolean showCollFullMes;
+
+    private TextView versionCodeTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration conf = new AndroidApplicationConfiguration();
         conf.useImmersiveMode = true;
 		View gameView = initializeForView(new GameLauncher(), conf);
+
+        versionCodeTxt = findViewById(R.id.versionCodeTxt);
+        versionCodeTxt.setText(VersionCode);
 
         gameLayout = findViewById(R.id.gameLayout);
         gameLayout.addView(gameView);
@@ -61,22 +69,33 @@ public class MainActivity extends AndroidApplication {
                     updateCollDeathZone(progress);
                 }
             });
-            
+
         playerVel = findViewById(R.id.playerVel);
-        playerVelVal = playerVel.getProgress()/100f;
+        playerVelVal = playerVel.getProgress() / 100f;
         playerVel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
                 public void onStartTrackingTouch(SeekBar p1) {}
                 public void onStopTrackingTouch(SeekBar p1) {}
                 @Override
                 public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
-                    playerVelVal = progress/100f;
+                    playerVelVal = progress / 100f;
                 }
             });
-            rightDebugLayout = findViewById(R.id.rightDebugLayout);
+
+        rightDebugLayout = findViewById(R.id.rightDebugLayout);
+        collSafeDistanceBar = findViewById(R.id.collSafeDistance);
+        collSafeDistanceBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+                public void onStartTrackingTouch(SeekBar p1) {}
+                public void onStopTrackingTouch(SeekBar p1) {}
+                @Override
+                public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                    collSafeDistance = progress/100f;
+                }
+            });
+        collSafeDistance = collSafeDistanceBar.getProgress()/100f;
     }
 
     private void updateCollDeathZone(float progress) {
-        collDeathZone = progress/100f;
+        collDeathZone = progress / 100f;
     }
 
 
@@ -90,18 +109,18 @@ public class MainActivity extends AndroidApplication {
         isTouchable = !((ToggleButton)v).isChecked();
         cgTouchM(isTouchable);
     }
-    public void cgTouchM(boolean isTouchable){
+    public void cgTouchM(boolean isTouchable) {
         View targetLayout = debugScrollView;
         targetLayout.setFocusable(isTouchable);
         targetLayout.setAlpha(isTouchable ? 1.0f : 0.55f); // 可见与不可触摸
     }
-    
-    public void cgCollFullMes(View v){
+
+    public void cgCollFullMes(View v) {
         showCollFullMes = !showCollFullMes;
     }
-    
+
     public static boolean stepTest;
-    public void cgStepTest(View v){
+    public void cgStepTest(View v) {
         stepTest = !stepTest;
     }
 
