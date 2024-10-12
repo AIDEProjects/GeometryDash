@@ -3,6 +3,7 @@
 ✓增加一个按钮来启用/禁用debugtxt区域的交互
 ✓解决斜着走会穿透的问题(collDeathZone为0时可以解决，但是会有蹭边问题)
 ✓可视化绘制collDeathZone并使用SeekBar调整大小
+✓完善调试用ui界面增加几个参数按钮与一些描述
 解决collDeathZone的判定逻辑问题，真正实用化
 解决debugTxt视图高频刷屏会卡死问题
 debugtxt更新为上持续区，下日志区

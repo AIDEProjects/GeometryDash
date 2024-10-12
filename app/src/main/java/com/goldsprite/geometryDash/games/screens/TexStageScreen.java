@@ -62,7 +62,7 @@ public class TexStageScreen extends LinkScreen {
         pm.drawRectangle(0, 0, 12, 10);
         tex = new TextureRegion(new Texture(pm));
         player = new MyActor(tex);
-        player.setBounds(1518, 700, player.getWidth() * 12, player.getHeight() * 10);
+        player.setBounds(1518, 710, player.getWidth() * 12, player.getHeight() * 10);
         stage.addActor(player);
 
     }
@@ -175,10 +175,10 @@ public class TexStageScreen extends LinkScreen {
         Rectangle rec1 = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
         //单步碰撞测试
         if (touchScreen) {
-            touchScreen = false;
-            float delta = 1 / 60f * 4f * 1f;
+            if(MainActivity.stepTest)touchScreen = false;
+            float delta = 1 / 60f * 4f * (MainActivity.stepTest?2 : 0.3f);
 
-            rec1.velocity = new Vector2(moveVel * 0.8f * dir.x, moveVel * dir.y);
+            rec1.velocity = new Vector2(moveVel * 0.8f * dir.x, moveVel * dir.y).multiply(5).multiply(MainActivity.playerVelVal);
 
             boolean isColl = -1 != rec1.resolveCollisionWithCompositeRect(delta, crec);
             Vector2 oldPos=rec1.position;

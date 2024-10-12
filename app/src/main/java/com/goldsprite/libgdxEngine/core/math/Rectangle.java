@@ -152,18 +152,19 @@ public class Rectangle {
                         collInfo.trangleVel = new Vector2(-velBack.x * 0, -velBack.y);
                     }
                 }
-                
-                 MainActivity.addDebugTxt(
-                 "检测边索引: " + (i)+", 边朝向:"+faceString(line.normal())
-                 + "\n过检定次数: " + collInfoIndex
-                 + "\n角色速度: " + deltaVel
-                 + "\n判定方向: " + faceString(collInfo.collEdge)
-                 + "\n回退向量: " + velBack
-                 + "\n阻挡后速度: " + deltaVel.add(velBack)
-                 + "\n条件: oppsiteNormal:"+oppsiteNormal+", backOutof:"+backOutof+", inLineX:" + inLineX + ",inRectY:" + inRectY + ",inLineY:" + inLineY + ",inRectX:" + inRectX
-                 + "\n"
-                 );
-                 
+
+                if(MainActivity.showCollFullMes){
+                    MainActivity.addDebugTxt(
+                        "检测边索引: " + (i)+", 边朝向:"+faceString(line.normal())
+                        + "\n过检定次数: " + collInfoIndex
+                        + "\n角色速度: " + deltaVel
+                        + "\n判定方向: " + faceString(collInfo.collEdge)
+                        + "\n回退向量: " + velBack
+                        + "\n阻挡后速度: " + deltaVel.add(velBack)
+                        + "\n条件: oppsiteNormal:"+oppsiteNormal+", backOutof:"+backOutof+", inLineX:" + inLineX + ",inRectY:" + inRectY + ",inLineY:" + inLineY + ",inRectX:" + inRectX
+                        + "\n"
+                    );
+                 }
             }
 
             //检测到碰撞的情况
@@ -202,7 +203,7 @@ public class Rectangle {
                     finalVel = collInfo.edgeVel;
                 }
             }
-
+            
             MainActivity.addDebugTxt(
                 "\n完成检测，结果如下: "
                 + "\n初始速度方向: " + faceString(deltaVel.normalize())

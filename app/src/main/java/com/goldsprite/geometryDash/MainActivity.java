@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.ToggleButton;
 
 public class MainActivity extends AndroidApplication { 
     static MainActivity instance;
@@ -27,9 +28,13 @@ public class MainActivity extends AndroidApplication {
 
     boolean showDebugTxt=true, isTouchable=true;
 
-    SeekBar bar;
+    SeekBar bar, playerVel;
 
-    public static float collDeathZone;
+    public static float collDeathZone, playerVelVal;
+
+    private LinearLayout rightDebugLayout;
+    
+    public static boolean showCollFullMes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,7 @@ public class MainActivity extends AndroidApplication {
         debugTxt = findViewById(R.id.debugTxt);
         debugScrollView = findViewById(R.id.debugScrollView);
         bar = findViewById(R.id.collDeathZoneBar);
-        updateCollDeathZone(30);
+        updateCollDeathZone(bar.getProgress());
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
                 public void onStartTrackingTouch(SeekBar p1) {}
                 public void onStopTrackingTouch(SeekBar p1) {}
@@ -56,6 +61,18 @@ public class MainActivity extends AndroidApplication {
                     updateCollDeathZone(progress);
                 }
             });
+            
+        playerVel = findViewById(R.id.playerVel);
+        playerVelVal = playerVel.getProgress()/100f;
+        playerVel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+                public void onStartTrackingTouch(SeekBar p1) {}
+                public void onStopTrackingTouch(SeekBar p1) {}
+                @Override
+                public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                    playerVelVal = progress/100f;
+                }
+            });
+            rightDebugLayout = findViewById(R.id.rightDebugLayout);
     }
 
     private void updateCollDeathZone(float progress) {
@@ -66,14 +83,26 @@ public class MainActivity extends AndroidApplication {
     public void cgDebugTxt(View v) {
         showDebugTxt = !showDebugTxt;
         debugTxt.setVisibility(showDebugTxt ? TextView.VISIBLE : TextView.GONE);
+        rightDebugLayout.setVisibility(showDebugTxt ? TextView.VISIBLE : TextView.GONE);
     }
 
     public void cgTouch(View v) {
-        isTouchable = !isTouchable;
+        isTouchable = !((ToggleButton)v).isChecked();
+        cgTouchM(isTouchable);
+    }
+    public void cgTouchM(boolean isTouchable){
         View targetLayout = debugScrollView;
-
         targetLayout.setFocusable(isTouchable);
         targetLayout.setAlpha(isTouchable ? 1.0f : 0.55f); // 可见与不可触摸
+    }
+    
+    public void cgCollFullMes(View v){
+        showCollFullMes = !showCollFullMes;
+    }
+    
+    public static boolean stepTest;
+    public void cgStepTest(View v){
+        stepTest = !stepTest;
     }
 
 

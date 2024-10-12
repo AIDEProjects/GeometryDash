@@ -10,14 +10,85 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 
-	<SeekBar
-		android:id="@+id/collDeathZoneBar"
-		android:layout_width="150dp"
-		android:layout_height="wrap_content"
-        android:progress="30"
-		android:max="100"
+	<LinearLayout
+        android:layout_margin="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+		android:orientation="horizontal"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+            android:textSize="15dp"
+			android:text="VersionCode: 241012_v1"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:gravity="right"
+		android:orientation="vertical"
 		android:layout_alignParentRight="true"
-		android:layout_margin="20dp"/>
+		android:layout_width="250dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="20dp"
+		android:id="@+id/rightDebugLayout">
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="碰撞死区"/>
+
+			<SeekBar
+				android:id="@+id/collDeathZoneBar"
+				android:layout_width="150dp"
+				android:layout_height="wrap_content"
+				android:progress="0"
+				android:max="100"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="移动速度"/>
+
+			<SeekBar
+				android:id="@+id/playerVel"
+				android:layout_width="150dp"
+				android:layout_height="wrap_content"
+				android:progress="20"
+				android:max="100"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+
+			<TextView
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="屏幕下方左右移动，上方下上移动\n碰撞细节显示具体边信息，inLineX表纵边贴住后X是否在内，inRextY表示横向移动纵坐标是否接触，现在快速刷屏几率卡死(还没修)\n碰撞死区别开，斜向移动会卡角穿透, 逻辑还没完善，最后可能做成滑边效果"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
 
 	<LinearLayout
 		android:layout_margin="10dp"
@@ -30,18 +101,37 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<Button
+			<ToggleButton
 				android:layout_width="60dp"
 				android:layout_height="30dp"
-				android:onClick="cgDebugTxt"
-				android:background="#FFD5D5D5"/>
+				android:textOn="显隐 隐"
+				android:textOff="显隐 显"
+				android:textSize="9dp"
+				android:onClick="cgDebugTxt"/>
 
-			<Button
+			<ToggleButton
 				android:layout_width="60dp"
 				android:layout_height="30dp"
-				android:text=""
-				android:onClick="cgTouch"
-				android:background="#FFD5D5D5"/>
+				android:textOn="焦点 透"
+				android:textOff="焦点 触"
+				android:textSize="9dp"
+				android:onClick="cgTouch"/>
+
+			<ToggleButton
+				android:layout_width="60dp"
+				android:layout_height="30dp"
+				android:textOn="单步"
+				android:textOff="连续"
+				android:textSize="9dp"
+				android:onClick="cgStepTest"/>
+
+			<ToggleButton
+				android:layout_width="60dp"
+				android:layout_height="30dp"
+				android:textOn="碰撞细节 开"
+				android:textOff="碰撞细节 关"
+				android:textSize="9dp"
+				android:onClick="cgCollFullMes"/>
 
 		</LinearLayout>
 
